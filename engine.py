@@ -147,6 +147,7 @@ class Engine:
             for col in enumerate(row[1]):
                 if col[1] == 0:
                     spots.append((row[0], col[0]))
+
         return spots
 
     def gameOver(self):

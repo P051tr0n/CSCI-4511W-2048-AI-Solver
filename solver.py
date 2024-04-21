@@ -117,7 +117,7 @@ def runRandom(board, firstMove):
 	# New version: calculate score of final state using move-distance and value-similarity for each tile
 	score = 0
 	end_board = randomGame.board
-	weighted_sum = N1_pattern_weight(board)
+	weighted_sum = N1_pattern_weight(end_board)
 	for j in range(len(end_board)):
 		for i in range(len(end_board[0])):
 			if (end_board[i][j] != 0):

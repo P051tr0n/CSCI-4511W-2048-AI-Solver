@@ -98,6 +98,30 @@ def loc_penalty(board):
 				output += 1
 	return output
 
+# New function: add up values of tiles that are in a chain where the next tile is twice the previous
+def chain_score(board):
+	output = 0
+	for row in range(4):
+		for col in range(4):
+			chain_continues = True
+			row_temp = row
+			col_temp = col
+			while(chain_continues):
+				# Make array of all horizontal and vertical neighbors (see value_similarity() for logic behind list comprehension)
+				shifts = [-1, 0, 1]
+				neighbor_coords = [[row_temp + shifts[i], col_temp + shifts[j]] for j in range(3) for i in range(3) if ((shifts[i] != 0 and shifts[j] == 0) or (shifts[i] == 0 and shifts[j] != 0)) and (row_temp + shifts[i] >= 0 and col_temp + shifts[j] >= 0) and (row_temp + shifts[i] < 4 and col_temp + shifts[j] < 4)]
+				neighbor_vals = [board[i][j] for (i,j) in neighbor_coords]
+
+				# Check whether the chain continues and move on to next in chain if so
+				if (2 * board[row_temp][col_temp] in neighbor_vals) and (board[row_temp][col_temp] != 0):
+					output += 1
+					next_in_chain = neighbor_coords[neighbor_vals.index(2 * board[row_temp][col_temp])]
+					(row_temp, col_temp) = (next_in_chain[0], next_in_chain[1])
+				else:
+					chain_continues = False
+
+	return output
+
 def runRandom(board, firstMove):
 	"""
 	Returns the end score of a given board played randomly after moving in a given direction.
@@ -148,7 +172,8 @@ def runRandom(board, firstMove):
 		# New version: calculate score of final state using move-distance and value-similarity for each tile
 		end_board = randomGame.board
 		weighted_sum = N1_pattern_weight(end_board)
-		score = weighted_sum
+		chain = chain_score(board)
+		score = weighted_sum + chain
 		for j in range(len(end_board)):
 			for i in range(len(end_board[0])):
 				if (end_board[i][j] != 0):

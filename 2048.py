@@ -46,27 +46,44 @@ def drawEnd(game, screen):
 	screen.addstr(18, 5, "GAME OVER",curses.color_pair(4))
 	screen.refresh()
 
-while True:
-	screen.border(0)
-	screen.addstr(2, 24, "2048 Machine Learning AI", curses.color_pair(1))
-	screen.addstr(3, 20, "- Hammad Jutt", curses.color_pair(0))
-	screen.addstr(7, 5, "Runs per move: " + str(runs), curses.color_pair(2))
-	screen.addstr(9, 5, "Please select an option", curses.color_pair(4))
-	screen.addstr(10, 5, "1 - Set runs per move")
-	screen.addstr(11, 5, "2 - Enable dynamic runs per move")
-	screen.addstr(12, 5, "3 - Start AI")
-	screen.addstr(13, 5, "4 - Exit")
-	screen.refresh()
+# while True:
+# 	screen.border(0)
+# 	screen.addstr(2, 24, "2048 Machine Learning AI", curses.color_pair(1))
+# 	screen.addstr(3, 20, "- Hammad Jutt", curses.color_pair(0))
+# 	screen.addstr(7, 5, "Runs per move: " + str(runs), curses.color_pair(2))
+# 	screen.addstr(9, 5, "Please select an option", curses.color_pair(4))
+# 	screen.addstr(10, 5, "1 - Set runs per move")
+# 	screen.addstr(11, 5, "2 - Enable dynamic runs per move")
+# 	screen.addstr(12, 5, "3 - Start AI")
+# 	screen.addstr(13, 5, "4 - Exit")
+# 	screen.refresh()
 
-	x = screen.getch()
-	if x == ord('1'):
-		runs = getRuns()
-	if x == ord('2'):
-		runs = 'Dynamic'		
-	if x == ord('3'):
-		drawEnd(solveGame(runs, screen), screen)
-	if x == ord('4'):
-		break
+# 	x = screen.getch()
+# 	if x == ord('1'):
+# 		runs = getRuns()
+# 	if x == ord('2'):
+# 		runs = 'Dynamic'		
+# 	if x == ord('3'):
+# 		drawEnd(solveGame(runs, screen), screen)
+# 	if x == ord('4'):
+# 		break
+
+
+screen.border(0)
+screen.addstr(2, 24, "2048 Machine Learning AI", curses.color_pair(1))
+screen.addstr(3, 20, "- Hammad Jutt", curses.color_pair(0))
+screen.addstr(7, 5, "Runs per move: " + str(runs), curses.color_pair(2))
+screen.addstr(9, 5, "Please select an option", curses.color_pair(4))
+screen.addstr(10, 5, "1 - Set runs per move")
+screen.addstr(11, 5, "2 - Enable dynamic runs per move")
+screen.addstr(12, 5, "3 - Start AI")
+screen.addstr(13, 5, "4 - Exit")
+screen.refresh()
+
+
+runs = 40
+for _ in range(50):
+	drawEnd(solveGame(runs, screen), screen)
 
 curses.echo()
 curses.endwin()

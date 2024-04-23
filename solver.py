@@ -2,6 +2,8 @@ import engine, random, curses
 
 COLORS = {0:0,2:1,4:2,8:3,16:4,32:5,64:6,128:7,256:8,512:9,1024:10,2048:11,4096:12,8192:13,16384:13,32768:12,65536:12}
 
+END_RESULT = -1
+
 def makeGame():
 	"""
 	Creates a new instance of a game
@@ -114,19 +116,48 @@ def runRandom(board, firstMove):
 	# # Original version: commenting out to replace with custom version for final project
 	# return randomGame.score
 
-	# New version: calculate score of final state using move-distance and value-similarity for each tile
-	end_board = randomGame.board
-	weighted_sum = N1_pattern_weight(end_board)
-	score = weighted_sum
-	for j in range(len(end_board)):
-		for i in range(len(end_board[0])):
-			if (end_board[i][j] != 0):
-				frac = 	1.0 / (move_distance(end_board, i, j) * value_similarity(end_board, i , j) + 0.01)
-				penalty = 3 * diag_penalty(end_board, i, j) + 4 * loc_penalty(end_board)
+	objective_func_choice = 'Benjamin'
 
-				score += 0.5 * frac - 0.2 * penalty
-	# print(score)
-	return score
+	if (objective_func_choice == 'MarkN1'):
+		# N-1 Pattern
+		pattern = [[16, 15, 14, 13], [15, 14, 13, 12], [14, 13, 12, 11], [13, 12, 11, 10]]
+    	# S Pattern
+		# pattern = [[16, 15, 14, 13], [9, 10, 11, 12], [8, 7, 6, 5], [1, 2, 3, 4]]
+
+		availableCells = 0
+		evaluation = 0
+		for i in range(randomGame.size):
+			for j in range(randomGame.size):
+				if randomGame.board[i][j] == 0 : availableCells += 1
+				evaluation += randomGame.board[i][j] * pattern[i][j]
+		return evaluation / (randomGame.size * randomGame.size - availableCells)
+	elif (objective_func_choice == 'MarkS'):
+		# N-1 Pattern
+	    # pattern = [[16, 15, 14, 13], [15, 14, 13, 12], [14, 13, 12, 11], [13, 12, 11, 10]]
+    	# S Pattern
+		pattern = [[16, 15, 14, 13], [9, 10, 11, 12], [8, 7, 6, 5], [1, 2, 3, 4]]
+
+		availableCells = 0
+		evaluation = 0
+		for i in range(randomGame.size):
+			for j in range(randomGame.size):
+				if randomGame.board[i][j] == 0 : availableCells += 1
+				evaluation += randomGame.board[i][j] * pattern[i][j]
+		return evaluation / (randomGame.size * randomGame.size - availableCells)
+	else:
+		# New version: calculate score of final state using move-distance and value-similarity for each tile
+		end_board = randomGame.board
+		weighted_sum = N1_pattern_weight(end_board)
+		score = weighted_sum
+		for j in range(len(end_board)):
+			for i in range(len(end_board[0])):
+				if (end_board[i][j] != 0):
+					frac = 	1.0 / (move_distance(end_board, i, j) * value_similarity(end_board, i , j) + 0.01)
+					penalty = 3 * diag_penalty(end_board, i, j) + 4 * loc_penalty(end_board)
+
+					score += 0.5 * frac - 0.2 * penalty
+		# print(score)
+		return score
 
 def bestMove(game, runs):
 	"""
@@ -178,5 +209,14 @@ def solveGame(runs, screen):
 		mainGame.makeMove(move)
 		screen.clear()
 		drawBoard(mainGame.board, screen)
-
-	return(mainGame)
+	
+	global END_RESULT
+	END_RESULT = -1
+	for i in range(4):
+		for j in range(4):
+			if (mainGame.board[i][j] >= END_RESULT):
+				END_RESULT = mainGame.board[i][j]
+	with open("results.txt", "a") as file:
+		file.write(str(END_RESULT) + ", ")
+	file.close()
+	return (mainGame)
